@@ -1,0 +1,7 @@
+
+Components
+packages
+bin
+obj
+*.userprefs
+Resource.designer.cs
