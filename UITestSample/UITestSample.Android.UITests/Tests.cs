@@ -20,16 +20,19 @@ namespace UITestSample.Android.UITests
         }
 
         [Test]
-        public void ClickingButtonTwiceShouldChangeItsLabel()
+        public void Insert50ItemsInList()
         {
-            Func<AppQuery, AppQuery> MyButton = c => c.Button("myButton");
+            // Insert 50 elements in the list
+            Func<AppQuery, AppQuery> addButton = c => c.Id("addAction");
+            for (int i = 0; i < 50; i++) {
+                app.Tap(addButton);
+            }
+            app.Screenshot("50 elements inserted.");
 
-            app.Tap(MyButton);
-            app.Tap(MyButton);
-            AppResult[] results = app.Query(MyButton);
-            app.Screenshot("Button clicked twice.");
+            //AppResult[] results = app.Query(MyButton);
+            //app.Screenshot("Button clicked twice.");
 
-            Assert.AreEqual("2 clicks!", results[0].Text);
+            //Assert.AreEqual("2 clicks!", results[0].Text);
         }
     }
 }

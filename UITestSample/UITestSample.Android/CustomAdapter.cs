@@ -6,7 +6,7 @@ using Android.Views;
 using Android.Util;
 using Android.Support.V7.Widget;
 
-namespace UITestSample.Android
+namespace UITestSample
 {
     public class CustomAdapter : RecyclerView.Adapter
     {

@@ -6,7 +6,7 @@ using Android.OS;
 using Android.Support.V7.Widget;
 using Android.Views;
 
-namespace UITestSample.Android
+namespace UITestSample
 {
     [Activity(Label = "UITestSample.Android", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
@@ -30,7 +30,7 @@ namespace UITestSample.Android
             // elements are laid out.
             layoutManager = new LinearLayoutManager(this);
             recyclerView.SetLayoutManager(layoutManager);
-
+            recyclerView.AddItemDecoration(new SimpleItemDecoration(this));
             adapter = new CustomAdapter(dataSet);
             // Set CustomAdapter as the adapter for RecycleView
             recyclerView.SetAdapter(adapter);
