@@ -75,6 +75,7 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\layout\row_item.axml" />
     <AndroidResource Include="Resources\menu\menu.axml" />
+    <AndroidResource Include="Resources\layout\dialog_view.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

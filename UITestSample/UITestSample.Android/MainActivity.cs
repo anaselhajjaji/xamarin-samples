@@ -36,21 +36,48 @@ namespace UITestSample
             recyclerView.SetAdapter(adapter);
         }
 
-        public override bool OnCreateOptionsMenu(IMenu menu) {
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
             MenuInflater.Inflate(Resource.Menu.menu, menu);
             return true;
         }
-            
-        public override bool OnOptionsItemSelected(IMenuItem item) {
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
             // Handle item selection
-            switch (item.ItemId) {
+            switch (item.ItemId)
+            {
                 case Resource.Id.addAction:
-                    dataSet.Add("new item");
-                    adapter.NotifyItemInserted(dataSet.Count - 1);
+                    AddNewItem();
                     return true;
                 default:
                     return OnOptionsItemSelected(item);
             }
+        }
+
+        private void AddNewItem()
+        {
+            View dialogView = LayoutInflater.Inflate(Resource.Layout.dialog_view, null);
+
+            //set alert for executing the task
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.SetTitle("Item creation");
+            alert.SetView(dialogView);
+            alert.SetPositiveButton("Create", (senderAlert, args) =>
+                {
+                    EditText editText = (EditText)dialogView.FindViewById(Resource.Id.itemName);
+                    if (!string.IsNullOrEmpty(editText.Text)) {
+                        dataSet.Add(editText.Text);
+                        adapter.NotifyItemInserted(dataSet.Count - 1);
+                        Toast.MakeText(this, "Item created!", ToastLength.Short).Show();
+                    }
+                });
+            alert.SetNegativeButton("Cancel", (senderAlert, args) =>
+                {
+                    Toast.MakeText(this, "Cancelled!", ToastLength.Short).Show();
+                });
+            Dialog dialog = alert.Create();
+            dialog.Show();
         }
     }
 }
