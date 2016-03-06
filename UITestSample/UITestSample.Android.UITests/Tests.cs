@@ -20,19 +20,46 @@ namespace UITestSample.Android.UITests
         }
 
         [Test]
+        public void AbortInsertion()
+        {
+            // Tap add
+            Func<AppQuery, AppQuery> addButton = c => c.Id("addAction");
+            app.Tap(addButton);
+
+            // Wait for the dialog
+            app.WaitForElement(c=>c.Id("itemCreationPrompt"), "Did not see the dialog appearing.", TimeSpan.FromSeconds(10));
+
+            // Tap cancel
+            Func<AppQuery, AppQuery> cancelButton = c => c.Text("Cancel");
+            app.Tap(cancelButton);
+
+            // Verify the toast
+            app.WaitForElement(c=>c.Text("Cancelled!"), "Did not see the abort message.", TimeSpan.FromSeconds(10));
+        }
+
+        [Test]
         public void Insert50ItemsInList()
         {
-            // Insert 50 elements in the list
-            Func<AppQuery, AppQuery> addButton = c => c.Id("addAction");
-            for (int i = 0; i < 50; i++) {
+            app.Screenshot("Initial state before insertion.");
+
+            for (int i = 1; i <= 50; i ++) {
+                // Tap Add
+                Func<AppQuery, AppQuery> addButton = c => c.Id("addAction");
                 app.Tap(addButton);
+
+                // Wait for the dialog
+                app.WaitForElement(c=>c.Id("itemCreationPrompt"), "Did not see the dialog appearing.", TimeSpan.FromSeconds(10));
+
+                Func<AppQuery, AppQuery> editText = c => c.Id("itemName");
+                app.EnterText(editText, "Item " + i);
+
+                // Tap create
+                Func<AppQuery, AppQuery> createButton = c => c.Text("Create");
+                app.Tap(createButton);
+
+                // Verify the toast
+                app.WaitForElement(c=>c.Text("Item created!"), "Did not see the creation message.", TimeSpan.FromSeconds(10));
             }
-            app.Screenshot("50 elements inserted.");
-
-            //AppResult[] results = app.Query(MyButton);
-            //app.Screenshot("Button clicked twice.");
-
-            //Assert.AreEqual("2 clicks!", results[0].Text);
         }
     }
 }
