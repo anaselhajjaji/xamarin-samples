@@ -59,6 +59,8 @@ namespace UITestSample.Android.UITests
 
                 // Verify the toast
                 app.WaitForElement(c=>c.Marked("Item created!"), "Did not see the creation message.", TimeSpan.FromSeconds(10));
+            
+                app.Screenshot("50 items inserted.");
             }
         }
     }
