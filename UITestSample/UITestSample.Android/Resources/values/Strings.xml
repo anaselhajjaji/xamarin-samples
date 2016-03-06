@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, Click Me!</string>
     <string name="app_name">UITestSample.Android</string>
+
+    <string name="dialog_positive_message">Item created!</string>
+    <string name="dialog_negative_message">Cancelled!</string>
 </resources>

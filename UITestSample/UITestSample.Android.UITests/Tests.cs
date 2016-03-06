@@ -34,7 +34,7 @@ namespace UITestSample.Android.UITests
             app.Tap(cancelButton);
 
             // Verify the toast
-            app.WaitForElement(c=>c.Text("Cancelled!"), "Did not see the abort message.", TimeSpan.FromSeconds(10));
+            app.WaitForElement(c=>c.Marked("Cancelled!"), "Did not see the abort message.", TimeSpan.FromSeconds(10));
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace UITestSample.Android.UITests
                 app.Tap(createButton);
 
                 // Verify the toast
-                app.WaitForElement(c=>c.Text("Item created!"), "Did not see the creation message.", TimeSpan.FromSeconds(10));
+                app.WaitForElement(c=>c.Marked("Item created!"), "Did not see the creation message.", TimeSpan.FromSeconds(10));
             }
         }
     }

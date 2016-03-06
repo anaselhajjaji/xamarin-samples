@@ -69,12 +69,12 @@ namespace UITestSample
                     if (!string.IsNullOrEmpty(editText.Text)) {
                         dataSet.Add(editText.Text);
                         adapter.NotifyItemInserted(dataSet.Count - 1);
-                        Toast.MakeText(this, "Item created!", ToastLength.Short).Show();
+                        Toast.MakeText(this, Resource.String.dialog_positive_message, ToastLength.Short).Show();
                     }
                 });
             alert.SetNegativeButton("Cancel", (senderAlert, args) =>
                 {
-                    Toast.MakeText(this, "Cancelled!", ToastLength.Short).Show();
+                    Toast.MakeText(this, Resource.String.dialog_negative_message, ToastLength.Short).Show();
                 });
             Dialog dialog = alert.Create();
             dialog.Show();
