@@ -4,4 +4,5 @@
     <string name="app_name">JsonSample</string>
     <string name="loading_msg">Loading...</string>
     <string name="data_url">https://dl.dropboxusercontent.com/s/cv75h76pv9su7l4/songs-small.json</string>
+    <string name="data_url_github">https://raw.githubusercontent.com/anaselhajjaji/xamarin-samples/master/TestData/songs-small.json</string>
 </resources>
