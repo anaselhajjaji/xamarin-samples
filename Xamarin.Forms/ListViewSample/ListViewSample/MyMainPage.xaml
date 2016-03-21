@@ -3,7 +3,7 @@
     <ContentPage.Content>
         <StackLayout>
             <ProgressBar x:Name="Progress" />
-            <ListView x:Name="EmployeeView">
+            <ListView CachingStrategy="RecycleElement" x:Name="EmployeeView">
                 <ListView.ItemTemplate>
                   <DataTemplate>
                     <TextCell Text="{Binding Artist}" Detail="{Binding Title}" />
