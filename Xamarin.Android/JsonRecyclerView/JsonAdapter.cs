@@ -17,16 +17,23 @@ namespace JsonRecyclerView
 
         public class JsonViewHolder : RecyclerView.ViewHolder {
 
-            public TextView ArtistTv { get; set; }
-            public TextView TimeTv { get; set; }
-            public TextView TrackIdTv { get; set; }
-            public TextView TitleTv { get; set; }
+            private TextView artistTv;
+            private TextView timeTv;
+            private TextView trackIdTv;
+            private TextView titleTv;
 
             public JsonViewHolder(View view) : base(view) {
-                ArtistTv = view.FindViewById<TextView>(Resource.Id.artistTv);
-                TimeTv = view.FindViewById<TextView>(Resource.Id.timesTv);
-                TrackIdTv = view.FindViewById<TextView>(Resource.Id.trackIdTv);
-                TitleTv = view.FindViewById<TextView>(Resource.Id.titleTv);
+                artistTv = view.FindViewById<TextView>(Resource.Id.artistTv);
+                timeTv = view.FindViewById<TextView>(Resource.Id.timesTv);
+                trackIdTv = view.FindViewById<TextView>(Resource.Id.trackIdTv);
+                titleTv = view.FindViewById<TextView>(Resource.Id.titleTv);
+            }
+
+            public void BindViewHolder(Song song) {
+                artistTv.Text = song.Artist;
+                timeTv.Text = song.SongDate.ToString();
+                trackIdTv.Text = song.TrackId;
+                titleTv.Text = song.Title;
             }
         }
 
@@ -38,11 +45,8 @@ namespace JsonRecyclerView
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
-            Song element = Songs[position];
-            (holder as JsonViewHolder).ArtistTv.Text = element.Artist;
-            (holder as JsonViewHolder).TimeTv.Text = element.SongDate.ToString();
-            (holder as JsonViewHolder).TrackIdTv.Text = element.TrackId;
-            (holder as JsonViewHolder).TitleTv.Text = element.Title;
+            Song song = Songs[position];
+            (holder as JsonViewHolder).BindViewHolder(song);
         }
 
         public override int ItemCount
