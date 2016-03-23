@@ -40,7 +40,7 @@ namespace JsonRecyclerView
         {
             Song element = Songs[position];
             (holder as JsonViewHolder).ArtistTv.Text = element.Artist;
-            (holder as JsonViewHolder).TimeTv.Text = element.Timestamp.ToString();
+            (holder as JsonViewHolder).TimeTv.Text = element.SongDate.ToString();
             (holder as JsonViewHolder).TrackIdTv.Text = element.TrackId;
             (holder as JsonViewHolder).TitleTv.Text = element.Title;
         }
