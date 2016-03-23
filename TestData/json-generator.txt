@@ -1,0 +1,10 @@
+[
+  '{{repeat(30000)}}',
+    {
+      TrackId: '{{guid()}}',
+      Artist: '{{firstName()}} {{surname()}}',
+      SongDate: '{{date(new Date(1980, 1, 1), new Date(), "YYYY-MM-ddTHH:mm:ss")}}',
+      Title: '{{lorem()}}',
+      TrackImage: 'http://dummyimage.com/200x200.png/{{integer(1, 99999999)}}/ffffff'
+    }
+]
