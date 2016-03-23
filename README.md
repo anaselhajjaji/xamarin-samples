@@ -16,7 +16,7 @@ Available [here](https://github.com/anaselhajjaji/xamarin-samples/tree/master/Xa
 The idea is to download a big JSON over HTTP GET (JSON size is 8mo and contains 30.000 records).
 The images will be downloaded asynchrounously during scrolling.
 
-Used components: RecyclerView and HandlerThread.
+Used components: RecyclerView, HandlerThread and CardView.
 
 ![JSON RecyclerView Sample screenshot on Android](https://raw.githubusercontent.com/anaselhajjaji/xamarin-samples/master/Screenshots/JsonRecyclerView.gif "JSON RecyclerView Sample screenshot on Android")
 
