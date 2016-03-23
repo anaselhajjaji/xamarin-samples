@@ -73,7 +73,7 @@ namespace JsonRecyclerView
                         }
                         catch (Exception e)
                         {
-                            // Manage error here.
+                            Console.WriteLine("Error happened: " + e.Message);
                         }
                     });
                 workThread.PostTask(downloadTask);
