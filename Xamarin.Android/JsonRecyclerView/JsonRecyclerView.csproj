@@ -63,6 +63,7 @@
     <Compile Include="SimpleItemDecoration.cs" />
     <Compile Include="Song.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="WorkThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

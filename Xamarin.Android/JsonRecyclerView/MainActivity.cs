@@ -17,10 +17,12 @@ namespace JsonRecyclerView
     [Activity(Label = "JsonRecyclerView", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
     {
-        RecyclerView recyclerView;
-        Android.Support.V7.Widget.RecyclerView.LayoutManager layoutManager;
+        private RecyclerView recyclerView;
+        private Android.Support.V7.Widget.RecyclerView.LayoutManager layoutManager;
+        private Handler uiHandler = new Handler();
+        private WorkThread workThread;
 
-        protected async override void OnCreate(Bundle savedInstanceState)
+        protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
@@ -40,25 +42,45 @@ namespace JsonRecyclerView
             progressDialog.Show();
 
             // Fetch songs
-            try
-            {
-                string url = GetString(Resource.String.data_url_github);
-                List<Song> songs = await FetchSongs(url);
+            workThread = new WorkThread("Download Songs", 10);
+            Action downloadTask = new Action(delegate
+                {
+                    try
+                    {
+                        string url = GetString(Resource.String.data_url_github);
+                        List<Song> songs = FetchSongs(url);
 
-                // Update UI
-                recyclerView.SetAdapter(new JsonAdapter(songs));
-            }
-            catch (Exception e)
-            {
-                Toast.MakeText(this, "Failed to download data: " + e.Message, ToastLength.Long).Show();
-            }
-            finally
-            {
-                progressDialog.Hide();
-            }
+                        uiHandler.Post(new Action(delegate {
+                            // Update UI
+                            recyclerView.SetAdapter(new JsonAdapter(songs));
+                        }));
+                    }
+                    catch (Exception e)
+                    {
+                        uiHandler.Post(new Action(delegate {
+                            Toast.MakeText(this, "Failed to download data: " + e.Message, ToastLength.Long).Show();
+                        }));
+                    }
+                    finally
+                    {
+                        uiHandler.Post(new Action(delegate {
+                            progressDialog.Hide();
+                        }));
+                    }
+                });
+            workThread.Start();
+            workThread.PrepareHandler();
+            workThread.PostTask(downloadTask);
         }
 
-        private async Task<List<Song>> FetchSongs(string url)
+        protected override void OnDestroy()
+        {
+            workThread.Quit();
+
+            base.OnDestroy();
+        }
+
+        private List<Song> FetchSongs(string url)
         {
             // Create an HTTP web request using the URL:
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
@@ -66,13 +88,14 @@ namespace JsonRecyclerView
             request.Method = "GET";
 
             // Send the request to the server and wait for the response:
-            using (WebResponse response = await request.GetResponseAsync())
+            using (WebResponse response = request.GetResponse())
             {
                 // Get a stream representation of the HTTP web response:
                 using (Stream stream = response.GetResponseStream())
+                using (StreamReader streamReader = new StreamReader(stream))
                 {
-                    JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
-                    List<Song> songs = JsonConvert.DeserializeObject<List<Song>>(jsonDoc.ToString());
+                    JsonSerializer serializer = new JsonSerializer();
+                    List<Song> songs = (List<Song>)serializer.Deserialize(streamReader, typeof(List<Song>));
                     return songs;
                 }
             }
