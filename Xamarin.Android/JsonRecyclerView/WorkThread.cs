@@ -6,6 +6,9 @@ using Android.OS;
 
 namespace JsonRecyclerView
 {
+    /// <summary>
+    /// Work thread.
+    /// </summary>
     public class WorkThread : HandlerThread
     {
         private Handler workerHandler;

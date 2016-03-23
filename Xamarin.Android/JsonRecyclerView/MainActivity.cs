@@ -19,6 +19,8 @@ namespace JsonRecyclerView
     {
         private RecyclerView recyclerView;
         private Android.Support.V7.Widget.RecyclerView.LayoutManager layoutManager;
+
+        // The worker HandlerThread
         private Handler uiHandler = new Handler();
         private WorkThread workThread;
 
@@ -79,6 +81,11 @@ namespace JsonRecyclerView
             base.OnDestroy();
         }
 
+        /// <summary>
+        /// Fetches the songs.
+        /// </summary>
+        /// <returns>The songs.</returns>
+        /// <param name="url">URL.</param>
         private List<Song> FetchSongs(string url)
         {
             // Create an HTTP web request using the URL:
