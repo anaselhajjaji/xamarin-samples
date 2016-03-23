@@ -8,32 +8,26 @@ using Android.Widget;
 using Android.OS;
 using Android.Support.V7.Widget;
 using Android.Graphics;
+using Square.Picasso;
 
 namespace JsonRecyclerView
 {
     public class JsonAdapter : RecyclerView.Adapter
     {
         public List<Song> Songs { get; set; }
-        private WorkThread workThread;
 
         public JsonAdapter(List<Song> songs)
         {
             Songs = songs;
-            workThread = new WorkThread("Image download...", 10);
-            workThread.Start();
-            workThread.PrepareHandler();
         }
 
         public class JsonViewHolder : RecyclerView.ViewHolder {
 
-            private string songId;
             private TextView artistTv;
             private TextView timeTv;
             private TextView trackIdTv;
             private TextView titleTv;
             private ImageView songImage;
-            private Handler uiHandler = new Handler();
-            private WorkThread workThread;
 
             public JsonViewHolder(View view) : base(view) {
                 // Retrieve components
@@ -44,56 +38,18 @@ namespace JsonRecyclerView
                 songImage = view.FindViewById<ImageView>(Resource.Id.songImage);
             }
 
-            public void BindViewHolder(Song song, WorkThread workThread) {
+            public void BindViewHolder(Song song) {
                 artistTv.Text = song.Artist;
                 timeTv.Text = song.SongDate.ToString();
                 trackIdTv.Text = song.TrackId;
                 titleTv.Text = song.Title;
-                this.songId = song.TrackId;
-                this.workThread = workThread;
 
                 // Download image
-                songImage.SetImageResource(Android.Resource.Drawable.IcMenuRotate);
-                DownloadImage(song.TrackId, song.TrackImage);
-            }
-
-            private void DownloadImage(string id, string url) {
-                Action downloadTask = new Action(delegate
-                    {
-                        try
-                        {
-                            Bitmap image = BitmapDownload(url);
-
-                            if (id.Equals(songId)) {
-                                uiHandler.Post(new Action(delegate {
-                                    // Update UI
-                                    songImage.SetImageBitmap(image);
-                                }));
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine("Error happened: " + e.Message);
-                        }
-                    });
-                workThread.PostTask(downloadTask);
-            }
-
-            private Bitmap BitmapDownload(string url)
-            {
-                // Create an HTTP web request using the URL:
-                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
-                request.Method = "GET";
-
-                // Send the request to the server and wait for the response:
-                using (WebResponse response = request.GetResponse())
-                {
-                    // Get a stream representation of the HTTP web response:
-                    using (Stream stream = response.GetResponseStream())
-                    {
-                        return BitmapFactory.DecodeStream(stream);
-                    }
-                }
+                Picasso.With(titleTv.Context)
+                    .Load(song.TrackImage)
+                    .Placeholder(Android.Resource.Drawable.IcMenuRotate)
+                    .Error(Android.Resource.Drawable.IcMenuCamera)
+                    .Into(songImage);
             }
         }
 
@@ -106,7 +62,7 @@ namespace JsonRecyclerView
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             Song song = Songs[position];
-            (holder as JsonViewHolder).BindViewHolder(song, workThread);
+            (holder as JsonViewHolder).BindViewHolder(song);
         }
 
         public override int ItemCount

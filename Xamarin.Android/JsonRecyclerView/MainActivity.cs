@@ -42,7 +42,7 @@ namespace JsonRecyclerView
             progressDialog.Show();
 
             // Fetch songs
-            workThread = new WorkThread("Download Songs", 10);
+            workThread = new WorkThread("Download Songs");
             Action downloadTask = new Action(delegate
                 {
                     try
