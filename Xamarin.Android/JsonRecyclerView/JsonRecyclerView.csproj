@@ -64,12 +64,14 @@
     <Reference Include="Square.Picasso">
       <HintPath>packages\Square.Picasso.2.5.2.1\lib\MonoAndroid\Square.Picasso.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.CardView">
+      <HintPath>packages\Xamarin.Android.Support.v7.CardView.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.CardView.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JsonAdapter.cs" />
-    <Compile Include="SimpleItemDecoration.cs" />
     <Compile Include="Song.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="WorkThread.cs" />

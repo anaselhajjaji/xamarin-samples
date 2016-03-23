@@ -33,7 +33,6 @@ namespace JsonRecyclerView
             recyclerView = FindViewById<RecyclerView>(Resource.Id.recyclerView);
             layoutManager = new LinearLayoutManager(this);
             recyclerView.SetLayoutManager(layoutManager);
-            recyclerView.AddItemDecoration(new SimpleItemDecoration(this));
 
             // Show progress dialog
             ProgressDialog progressDialog = new ProgressDialog(this);
