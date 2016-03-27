@@ -8,7 +8,9 @@ using Android.Widget;
 using Android.OS;
 using Android.Support.V7.Widget;
 using Android.Graphics;
+
 using Square.Picasso;
+using Com.Lilarcor.Cheeseknife;
 
 namespace JsonRecyclerView
 {
@@ -34,10 +36,19 @@ namespace JsonRecyclerView
         /// </summary>
         public class JsonViewHolder : RecyclerView.ViewHolder {
 
+            [InjectView(Resource.Id.artistTv)]
             private TextView artistTv;
+
+            [InjectView(Resource.Id.timesTv)]
             private TextView timeTv;
+
+            [InjectView(Resource.Id.trackIdTv)]
             private TextView trackIdTv;
+
+            [InjectView(Resource.Id.titleTv)]
             private TextView titleTv;
+
+            [InjectView(Resource.Id.songImage)]
             private ImageView songImage;
 
             /// <summary>
@@ -45,12 +56,7 @@ namespace JsonRecyclerView
             /// </summary>
             /// <param name="view">View.</param>
             public JsonViewHolder(View view) : base(view) {
-                // Retrieve components
-                artistTv = view.FindViewById<TextView>(Resource.Id.artistTv);
-                timeTv = view.FindViewById<TextView>(Resource.Id.timesTv);
-                trackIdTv = view.FindViewById<TextView>(Resource.Id.trackIdTv);
-                titleTv = view.FindViewById<TextView>(Resource.Id.titleTv);
-                songImage = view.FindViewById<ImageView>(Resource.Id.songImage);
+                Cheeseknife.Inject(this, view);
             }
 
             /// <summary>

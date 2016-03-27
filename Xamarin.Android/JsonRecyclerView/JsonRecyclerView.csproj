@@ -67,6 +67,9 @@
     <Reference Include="Xamarin.Android.Support.v7.AppCompat">
       <HintPath>packages\Xamarin.Android.Support.v7.AppCompat.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
     </Reference>
+    <Reference Include="Cheeseknife">
+      <HintPath>Components\cheeseknife-1.0\lib\android\Cheeseknife.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
@@ -101,6 +104,10 @@
   <ItemGroup>
     <XamarinComponentReference Include="square.picasso">
       <Version>2.5.2.2</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="cheeseknife">
+      <Version>1.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
