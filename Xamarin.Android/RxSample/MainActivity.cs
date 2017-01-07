@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 using Android.App;
 using Android.Widget;
@@ -21,6 +22,8 @@ namespace RxSample
 
         public void OnError(Exception error)
         {
+            Console.WriteLine("Calling from Thread: " + Thread.CurrentThread.ManagedThreadId);
+
             // Show a message dialog to inform in case of error
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.SetMessage(error.Message)
@@ -30,6 +33,8 @@ namespace RxSample
 
         public void OnNext(ProcessedData value)
         {
+            Console.WriteLine("Calling from Thread: " + Thread.CurrentThread.ManagedThreadId);
+
             if (value.Data != null)
             {
                 RunOnUiThread(() => Glide.With(this).Load(value.Data).Into(imageView));
@@ -47,19 +52,15 @@ namespace RxSample
             Button startButton = FindViewById<Button>(Resource.Id.startButton);
             startButton.Click += (sender, e) => 
             { 
-                processor.Start();
+                processor.Start()./*ObserveOn(NewThreadScheduler.Default).SubscribeOn(Application.SynchronizationContext).*/Subscribe(this);
                 Toast.MakeText(this, "Processing started.", ToastLength.Short).Show();
             };
             Button stopButton = FindViewById<Button>(Resource.Id.stopButton);
             stopButton.Click += (sender, e) => 
-            { 
-                processor.Stop(); 
+            {
+                processor.Stop();
                 Toast.MakeText(this, "Processing stoped.", ToastLength.Short).Show();
             };
-
-            // Subscribe
-            // TODO Investigate SubscribeOn(NewThreadScheduler.Default).ObserveOn(NewThreadScheduler.Default)
-            processor.Subscribe(this);
         }
 
         protected override void OnPause()

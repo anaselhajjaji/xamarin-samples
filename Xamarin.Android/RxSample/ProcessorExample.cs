@@ -4,8 +4,8 @@ using System.Net;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using System.Threading;
-
-using Android.OS;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace RxSample
 {
@@ -13,7 +13,6 @@ namespace RxSample
     {
         readonly Subject<ProcessedData> subject = new Subject<ProcessedData>();
         IDisposable inner;
-        ProcessingThread processingThead = new ProcessingThread();
 
         public ProcessorExample()
         {
@@ -22,31 +21,33 @@ namespace RxSample
 
         public void Stop()
         {
-            processingThead.Quit();
         }
 
-        public void Start()
+        public IObservable<ProcessedData> Start()
         {
-            processingThead.Start();
-
-            processingThead.PostTask(() =>
-            {
-                while (!processingThead.StopRequested)
+            return Observable.Create<ProcessedData>(
+                (observer, cancellationToken) => Task.Factory.StartNew(
+                () =>
                 {
-                    try
+                    while (!cancellationToken.IsCancellationRequested)
                     {
-                        Thread.Sleep(3000);
+                        try
+                        {
+                            Thread.Sleep(3000);
 
-                        byte[] data = MakeHttpRequest();
-                        subject.OnNext(new ProcessedData(data, ProcessingEventName.DataAvailable));
+                            byte[] data = MakeHttpRequest();
+                            observer.OnNext(new ProcessedData(data, ProcessingEventName.DataAvailable));
+                        }
+                        catch (Exception e)
+                        {
+                            observer.OnError(e);
+                            break;
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        subject.OnError(e);
-                        break;
-                    }
-                }
-            });
+                },
+                cancellationToken,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default));
         }
 
         /// <summary>
@@ -95,54 +96,6 @@ namespace RxSample
 
         void ReleaseResources()
         {
-            processingThead.Quit();
-        }
-
-        class ProcessingThread : HandlerThread
-        {
-            Handler workerHandler;
-            Action waitingTask;
-            public bool StopRequested { get; private set; }
-
-            public ProcessingThread() : base("Device capture thread.", HandlerThread.NormPriority)
-            {
-            }
-
-            protected override void OnLooperPrepared()
-            {
-                base.OnLooperPrepared();
-
-                workerHandler = new Handler(Looper);
-
-                if (waitingTask != null)
-                {
-                    workerHandler.Post(waitingTask);
-                    waitingTask = null;
-                }
-            }
-
-            public void PostTask(Action task)
-            {
-                if (workerHandler != null)
-                {
-                    workerHandler.Post(task);
-                }
-                else {
-                    waitingTask = task;
-                }
-            }
-
-            public override bool Quit()
-            {
-                StopRequested = true;
-                return base.Quit();
-            }
-
-            public override void Start()
-            {
-                StopRequested = false;
-                base.Start();
-            }
         }
     }
 }
