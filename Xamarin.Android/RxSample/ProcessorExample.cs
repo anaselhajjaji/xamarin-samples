@@ -31,7 +31,7 @@ namespace RxSample
 
             processingThead.PostTask(() =>
             {
-                while (true)
+                while (!processingThead.StopRequested)
                 {
                     try
                     {
@@ -102,6 +102,7 @@ namespace RxSample
         {
             Handler workerHandler;
             Action waitingTask;
+            public bool StopRequested { get; private set; }
 
             public ProcessingThread() : base("Device capture thread.", HandlerThread.NormPriority)
             {
@@ -129,6 +130,18 @@ namespace RxSample
                 else {
                     waitingTask = task;
                 }
+            }
+
+            public override bool Quit()
+            {
+                StopRequested = true;
+                return base.Quit();
+            }
+
+            public override void Start()
+            {
+                StopRequested = false;
+                base.Start();
             }
         }
     }
