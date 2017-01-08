@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 
 using Android.App;
 using Android.Widget;
@@ -15,6 +17,7 @@ namespace RxSample
 
         ProcessorExample processor = new ProcessorExample();
         ImageView imageView;
+        IDisposable subscription;
 
         public void OnCompleted()
         {
@@ -52,13 +55,13 @@ namespace RxSample
             Button startButton = FindViewById<Button>(Resource.Id.startButton);
             startButton.Click += (sender, e) => 
             { 
-                processor.Start()./*ObserveOn(NewThreadScheduler.Default).SubscribeOn(Application.SynchronizationContext).*/Subscribe(this);
+                subscription = processor.Start().SubscribeOn(TaskPoolScheduler.Default).ObserveOn(Scheduler.CurrentThread).Subscribe(this);
                 Toast.MakeText(this, "Processing started.", ToastLength.Short).Show();
             };
             Button stopButton = FindViewById<Button>(Resource.Id.stopButton);
             stopButton.Click += (sender, e) => 
             {
-                processor.Stop();
+                ReleaseCurrentSubscription();
                 Toast.MakeText(this, "Processing stoped.", ToastLength.Short).Show();
             };
         }
@@ -67,15 +70,17 @@ namespace RxSample
         {
             base.OnPause();
 
-            processor.Stop();
+            // Unsubscribe...
+            ReleaseCurrentSubscription();
         }
 
-        protected override void OnDestroy()
+        void ReleaseCurrentSubscription()
         {
-            base.OnDestroy();
-
-            // Unsubscribe...
-            processor.Dispose();
+            if (subscription != null)
+            {
+                subscription.Dispose();
+                subscription = null;
+            }
         }
     }
 }

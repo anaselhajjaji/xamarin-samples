@@ -1,24 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Reactive.Disposables;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace RxSample
 {
-    public class ProcessorExample : IObservable<ProcessedData>, IDisposable
+    public class ProcessorExample
     {
-        readonly Subject<ProcessedData> subject = new Subject<ProcessedData>();
-        IDisposable inner;
-
-        public ProcessorExample()
-        {
-            inner = Disposable.Create(() => ReleaseResources());
-        }
-
         public void Stop()
         {
         }
@@ -29,13 +19,19 @@ namespace RxSample
                 (observer, cancellationToken) => Task.Factory.StartNew(
                 () =>
                 {
-                    while (!cancellationToken.IsCancellationRequested)
+                    while (true)
                     {
                         try
                         {
                             Thread.Sleep(3000);
 
                             byte[] data = MakeHttpRequest();
+
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                break;
+                            }
+
                             observer.OnNext(new ProcessedData(data, ProcessingEventName.DataAvailable));
                         }
                         catch (Exception e)
@@ -79,23 +75,6 @@ namespace RxSample
             }
 
             return data;
-        }
-
-        public IDisposable Subscribe(IObserver<ProcessedData> observer)
-        {
-            return subject.Subscribe(observer);
-        }
-
-        public void Dispose()
-        {
-            // Setting this to Disposable.Empty is an easy way to make sure that
-            // nothing bad happens if someone double-disposes
-            inner.Dispose();
-            inner = Disposable.Empty;
-        }
-
-        void ReleaseResources()
-        {
         }
     }
 }
